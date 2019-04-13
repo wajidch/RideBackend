@@ -58,11 +58,20 @@ class CarsController{
           res.json({ status: false, error: 'Update failed', car: null });
       } 
         dbCar.carNumber = postedCar.carNumber;
-        dbCar.save((err, updatedCar)=>{
-          if(err){
-            console.log(`updateCar error: ${err}`);
-          }
-          res.json(updatedCar);
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(postedCar.password, salt, (err, hash) => {
+            if (err) {
+              throw err;
+            } else {
+              dbCar.password = hash;
+              dbCar.save((err, updatedCar)=>{
+                if(err){
+                  console.log(`updateCar error: ${err}`);
+                }
+                res.json(updatedCar);
+              }); 
+            }
+          });
         }); 
       }) ;
     }
