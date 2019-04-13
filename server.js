@@ -4,10 +4,11 @@ const app = express();
 const bodyParser = require("body-parser");
 //Db config
 const db = require("./config/keys").mongoURI;
-const cars = require("./routes/api/cars");
-const driver = require("./routes/api/driver");
-const posts = require("./routes/api/posts");
+const cars = require("./controllers/api/cars");
+const driver = require("./controllers/api/driver");
+const posts = require("./controllers/api/posts");
 var cors = require('cors')
+const router = express.Router();
 
 //body parser
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -17,7 +18,9 @@ mongoose
   .then(() => console.log("Mongo Db Connected"))
   .catch(err => console.log("Error :(", err));
 app.use(cors());
-app.use("/api/cars", cars);
+const controllerClass = cars;
+const controller = new controllerClass(router);
+app.use("/api/cars", router);
 app.use("/api/driver", driver);
 app.use("/api/posts", posts);
 
