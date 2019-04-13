@@ -2,7 +2,7 @@ const express = require("express");
 const gravatar = require("gravatar");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
-const Ride = require("../../model/Ride");
+const Ride = require("../../model/Rides");
 
 
 router.post("/createRide", (req, res) => {
