@@ -19,19 +19,22 @@ mongoose
   .then(() => console.log("Mongo Db Connected"))
   .catch(err => console.log("Error :(", err));
 app.use(cors());
-
+//Car router
 const carRouter = express.Router();
 const controllerCarsClass = cars;
 const carController = new controllerCarsClass(carRouter);
-
+//Ride router
 const rideRouter = express.Router();
 const controllerRidesClass = rides;
 const rideController = new controllerRidesClass(rideRouter);
-
+//Driver router
+const driverRouter = express.Router();
+const controllerDriversClass = drivers;
+const driverController = new controllerDriversClass(driverRouter);
 
 app.use("/api/cars", carRouter);
 app.use("/api/rides", rideRouter);
-app.use("/api/drivers", drivers);
+app.use("/api/drivers", driverRouter);
 app.use("/api/posts", posts);
 
 const port = process.env.PORT || 5007;
