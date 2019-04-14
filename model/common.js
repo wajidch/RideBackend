@@ -11,13 +11,13 @@ const rideInfo = new Schema({
 });
 
 const driverInfo = new Schema({
-    driverId: { type: String },
-    name: { type: String },
+    _id: { type: String },
+    firstName: { type: String },
     status: { type: String }
 });
 
 const carInfo = new Schema({
-    carId: { type: String },
+    _id: { type: String },
     carNumber: { type: String }
 });
 module.exports = { rideInfo, driverInfo, carInfo }

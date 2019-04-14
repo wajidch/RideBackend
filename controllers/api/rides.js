@@ -1,6 +1,8 @@
 const express = require("express");
 const gravatar = require("gravatar");
 const Rides = require("../../model/Rides");
+const Drivers = require("../../model/Drivers");
+const Cars = require("../../model/Cars");
 
 
 class RidesController {
@@ -21,6 +23,7 @@ class RidesController {
       if (err) {
         console.log(`getRides error: ${err}`);
       }
+      console.log(`**get Rides OK**`);
       res.json(rides);
     });
   }
@@ -29,7 +32,7 @@ class RidesController {
     console.log(`controllers/api/rides/createRide`);
     var postedDriver = req.body;
     var ride = new Rides();
-   // ride.driver = "3123123dfdf32332"; //postedDriver.driver;
+    // ride.driver = "3123123dfdf32332"; //postedDriver.driver;
     ride.startPoint = postedDriver.startPoint;
     ride.endPoint = postedDriver.endPoint;
     ride.startTime = postedDriver.startTime;
@@ -69,6 +72,7 @@ class RidesController {
       if (err) {
         console.log(`getTodayPlannedRides error: ${err}`);
       }
+      console.log(`**get Today Planned Rides OK**`);
       res.json(rides);
     });
   }
@@ -82,13 +86,14 @@ class RidesController {
     ride.endPoint = postedDriver.endPoint;
     ride.customer = postedDriver.customer;
     ride.isPlanRideForToday = true;
-    ride.createdOn =  new Date();
+    ride.createdOn = new Date();
 
     ride.save((err, ride) => {
       if (err) {
         console.log(`createTodayPlannedRides error: ${err}`);
         res.json(err);
       }
+      console.log(`**create Today Planned Rides OK**`);
       res.json(ride);
     });
 
@@ -102,7 +107,7 @@ class RidesController {
 
     var end = new Date();
     end.setHours(23, 59, 59, 999);
-
+    var response = [];
     Rides.find({
       isPlanRideForToday: false,
       createdOn: { $gte: start, $lt: end }, isPlanShiftForToday: true
@@ -110,7 +115,9 @@ class RidesController {
       if (err) {
         console.log(`getTodayPlannedShifts error: ${err}`);
       }
+      console.log(`**get Today Planned Shifts OK**`);
       res.json(rides);
+
     });
   }
 
@@ -120,8 +127,8 @@ class RidesController {
     var ride = new Rides();
 
     ride.car = postedDriver.car;
-    ride.driver = postedDriver.driver; 
-    ride.isPlanShiftForToday = true; 
+    ride.driver = postedDriver.driver;
+    ride.isPlanShiftForToday = true;
     ride.createdOn = new Date();
 
     ride.save((err, ride) => {
@@ -129,6 +136,7 @@ class RidesController {
         console.log(`createTodayPlannedShifts error: ${err}`);
         res.json(err);
       }
+      console.log(`**create Today Planned Shifts OK**`);
       res.json(ride);
     });
 

@@ -14,6 +14,7 @@ class DriversController{
             console.log(`getDrivers error: ${err}`);
             res.json(err);
           }
+          console.log(`**get Drivers OK**`);
           res.json(drivers);
         });
       }
