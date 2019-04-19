@@ -1,8 +1,7 @@
-const express = require("express");
-const gravatar = require("gravatar");
-//const router = express.Router();
-const bcrypt = require("bcryptjs");
-const Cars = require("../../model/Cars");
+
+const bcrypt = require("bcryptjs"),
+  Cars = require("../../model/Cars"),
+  Drivers = require("../../model/Drivers");
 
 
 class CarsController {
@@ -28,8 +27,10 @@ class CarsController {
     console.log(`controllers/api/cars/addCar`);
     var postedCar = req.body;
     var car = new Cars();
+    var driver = new Drivers();
     car.carNumber = postedCar.carNumber;
     car.password = postedCar.password;
+
 
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(car.password, salt, (err, hash) => {
@@ -41,7 +42,15 @@ class CarsController {
             if (err) {
               console.log(`addCar error: ${err}`);
             }
-            res.json(car);
+            console.log('**Car created**');
+            driver.carId = car._id;
+            driver.save((err, dbDriver) => {
+              if (err) {
+                console.log(`addCar.dbDriver error: ${err}`);
+              }
+              console.log('**Car driver created**');
+              res.json(car);
+            });
           });
         }
       });
@@ -102,17 +111,17 @@ class CarsController {
       }
       if (dbCar != null) {
         bcrypt.compare(car.password, dbCar.password, function (err, result) {
-          if (result === true) { 
+          if (result === true) {
             console.log('**Successfully Authenticated**');
-           res.status(200).json({ status: true, error: null, car: dbCar});
+            res.status(200).json({ status: true, error: null, car: dbCar });
           } else {
             console.log('Authentication error: Invalid username or password');
-            res.status(401).json({ status: false, error: 'Authentication error: Invalid username or password', car: null});
+            res.status(401).json({ status: false, error: 'Authentication error: Invalid username or password', car: null });
           }
         });
       } else {
         console.log('Authentication error: Invalid username or password');
-        res.status(401).json({ status: false, error: 'Authentication error: Invalid username or password', car: null});
+        res.status(401).json({ status: false, error: 'Authentication error: Invalid username or password', car: null });
       }
 
 

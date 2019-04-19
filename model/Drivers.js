@@ -4,15 +4,15 @@ common = require('./common');
 
 
 const DriverSchema = new Schema({
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true  },
-    email: {   type: String, required: true},
-    profileName: {  type: String, required: true },
-    city: { type: String, required: false },
-    address: {  type: String, required: false },
-    dob: { type: Date, required: false , default: Date.now },
-    status: {  type: String, required: false },
-    rides: [common.rideInfo]
+    firstName: { type: String, trim:true },
+    lastName: { type: String, trim: true  },
+    email: {   type: String, trim: true},
+    profileName: {  type: String, trim: true },
+    city: { type: String, trim: true },
+    address: {  type: String, trim: true },
+    dob: { type: Date, default: Date.now },
+    status: {  type: String, trim: true },
+    carId: {type: String}
 
 });
 module.exports = Drivers = mongoose.model("drivers", DriverSchema);
