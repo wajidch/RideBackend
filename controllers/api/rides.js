@@ -33,6 +33,7 @@ class RidesController {
     var postedDriver = req.body;
     var ride = new Rides();
     // ride.driver = "3123123dfdf32332"; //postedDriver.driver;
+    ride.carId = postedDriver.carId;
     ride.startPoint = postedDriver.startPoint;
     ride.endPoint = postedDriver.endPoint;
     ride.startTime = postedDriver.startTime;

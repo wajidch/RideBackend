@@ -1,5 +1,6 @@
 
-const Drivers = require("../../model/Drivers");
+const Drivers = require("../../model/Drivers"),
+      Rides  =  require("../../model/Rides");
 
 
 class DriversController {
@@ -7,6 +8,7 @@ class DriversController {
     router.get('/', this.getDrivers.bind(this));
     router.get('/:carId', this.getDriver.bind(this));
     router.put('/profile/:carId', this.updateDriver.bind(this));
+    router.get('/mylastrides/:carId', this.myLastRides.bind(this));
   }
 
 
@@ -61,6 +63,19 @@ class DriversController {
         console.log(`**get Driver OK**`);
         res.json(dbDriver);
       });  
+  }
+
+  myLastRides(req,res) {
+    console.log(`controllers/api/drivers/myLastRides`); 
+    Rides.find({ 'carId': req.params.carId.toString()}).sort({createdOn:-1})
+    .exec( (err, myLastRides) => {
+      if (err) {
+        console.log(`myRides error: ${err}`);
+        res.json(err);
+      }
+      console.log(`**get myLastRides OK**`);
+      res.json(myLastRides);
+    });  
   }
 
 }
