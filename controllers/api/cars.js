@@ -88,12 +88,20 @@ class CarsController {
 
   deleteCar(req, res) {
     console.log(`controllers/api/cars/deleteCar`);
-    Cars.deleteOne({ '_id': req.params.id.toString() }, (err, deletedProduct) => {
+    Cars.deleteOne({ '_id': req.params.id.toString() }, (err, deletedCar) => {
       if (err) {
         console.log(`deleteCar error: ${err}`);
         res.json(err);
       }
-      res.json(deletedProduct);
+      console.log('**Delete Car OK**');
+      Drivers.deleteOne({ 'carId': req.params.id.toString() }, (err, deletedDriver) => {
+        if (err) {
+          console.log(`deleteCar.deleteDriver error: ${err}`);
+          res.json(err);
+        }
+        console.log('**Delete Driver OK**');
+        res.json(deletedCar);
+      }); 
     });
   }
 
