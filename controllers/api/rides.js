@@ -14,8 +14,8 @@ class RidesController {
     router.get('/todayPlannedRides', this.getTodayPlannedRides.bind(this));
     router.post('/todayPlannedShifts', this.createTodayPlannedShifts.bind(this));
     router.get('/todayPlannedShifts', this.getTodayPlannedShifts.bind(this));
-     router.put('/sendRide', this.sendRideToDriver.bind(this));
-    //router.delete('/:id', this.deleteRide.bind(this));
+    router.put('/sendRide', this.sendRideToDriver.bind(this));
+    router.delete('/:id', this.deleteRide.bind(this));
   }
 
   getRides(req, res) {
@@ -147,7 +147,7 @@ class RidesController {
   sendRideToDriver(req, res) {
     console.log(`controllers/api/rides/sendRideToDriver`);
     var postedData = req.body;
-    Rides.findOne({'_id': postedData.rideId},(err,dbRide)=>{
+    Rides.findOne({ '_id': postedData.rideId }, (err, dbRide) => {
       if (err) {
         console.log(`sendRideToDriver error: ${err}`);
       }
@@ -160,9 +160,20 @@ class RidesController {
         console.log(`**sendRideToDriver OK**`);
       });
     });
-    
+
 
   }
 
+  deleteRide(req, res) {
+    console.log(`controllers/api/rides/deleteRide`);
+    Rides.deleteOne({ '_id': req.params.id.toString() }, (err, deletedRide) => {
+      if (err) {
+        console.log(`deleteRide error: ${err}`);
+        res.json(err);
+      }
+      console.log('**Delete Ride OK**');
+      res.json(deletedRide);
+    });
+  }
 }
 module.exports = RidesController; 
