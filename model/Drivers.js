@@ -10,7 +10,7 @@ const DriverSchema = new Schema({
     profileName: {  type: String, trim: true },
     city: { type: String, trim: true },
     address: {  type: String, trim: true },
-    dob: { type: Date, default: Date.now },
+    dob: { type: string},
     status: {  type: String, trim: true },
     carId: {type: String}
 
