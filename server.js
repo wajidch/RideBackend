@@ -7,7 +7,6 @@ const db = require("./config/keys").mongoURI;
 const cars = require("./controllers/api/cars");
 const rides = require("./controllers/api/rides");
 const drivers = require("./controllers/api/drivers");
-const posts = require("./controllers/api/posts");
 var cors = require('cors')
 
 
@@ -35,8 +34,7 @@ const driverController = new controllerDriversClass(driverRouter);
 app.use("/api/cars", carRouter);
 app.use("/api/rides", rideRouter);
 app.use("/api/drivers", driverRouter);
-app.use("/api/posts", posts);
 
-const port = process.env.PORT || 5007;
+const port = process.env.PORT || 3007;
 
 app.listen(port, () => console.log(`Server Running on port ${port}`));
