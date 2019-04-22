@@ -1,8 +1,4 @@
-const express = require("express");
-const gravatar = require("gravatar");
 const Rides = require("../../model/Rides");
-const Drivers = require("../../model/Drivers");
-const Cars = require("../../model/Cars");
 
 
 class RidesController {

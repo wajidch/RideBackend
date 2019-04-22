@@ -4,9 +4,9 @@ const app = express();
 const bodyParser = require("body-parser");
 //Db config
 const db = require("./config/keys").mongoURI;
-const cars = require("./controllers/api/cars");
-const rides = require("./controllers/api/rides");
-const drivers = require("./controllers/api/drivers");
+const carsController = require("./controllers/api/cars.controller");
+const ridesController = require("./controllers/api/rides.controller");
+const driversController = require("./controllers/api/drivers.controller");
 var cors = require('cors')
 
 
@@ -20,15 +20,15 @@ mongoose
 app.use(cors());
 //Car router
 const carRouter = express.Router();
-const controllerCarsClass = cars;
+const controllerCarsClass = carsController;
 const carController = new controllerCarsClass(carRouter);
 //Ride router
 const rideRouter = express.Router();
-const controllerRidesClass = rides;
+const controllerRidesClass = ridesController;
 const rideController = new controllerRidesClass(rideRouter);
 //Driver router
 const driverRouter = express.Router();
-const controllerDriversClass = drivers;
+const controllerDriversClass = driversController;
 const driverController = new controllerDriversClass(driverRouter);
 
 app.use("/api/cars", carRouter);
