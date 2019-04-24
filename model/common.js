@@ -20,4 +20,10 @@ const carInfo = new Schema({
     _id: { type: String },
     carNumber: { type: String }
 });
-module.exports = { rideInfo, driverInfo, carInfo }
+
+const roleInfo = new Schema({
+    _id: { type: String },
+    name: { type: String }
+});
+
+module.exports = { rideInfo, driverInfo, carInfo, roleInfo}

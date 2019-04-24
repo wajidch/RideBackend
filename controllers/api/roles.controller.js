@@ -6,6 +6,7 @@ class RolesController {
   constructor(router) {
     router.get('/', this.getRoles.bind(this));
     router.get('/:id', this.getRole.bind(this));
+    router.post('/', this.createRole.bind(this));
     router.put('/:id', this.updateRole.bind(this));
     router.delete('/:id', this.deleteRole.bind(this));
   }
@@ -34,6 +35,23 @@ class RolesController {
         console.log(`**get Role OK**`);
         res.json(dbRole);
       });  
+  }
+
+  createRole(req, res) {
+    console.log(`controllers/api/roles/createRole`);
+    var postedRole = req.body;
+    var role = new Roles();
+
+    role.name = postedRole.name; 
+
+    role.save((err, createdRole) => {
+      if (err) {
+        res.json({ status: false, error: 'Update failed', car: null });
+      }
+      console.log('**create role OK**');
+      res.json(createdRole);
+    });
+
   }
 
   updateRole(req, res) {

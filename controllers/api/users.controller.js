@@ -50,13 +50,14 @@ class UsersController {
     User.address = postedUser.address;
     User.dob = postedUser.dob;
     User.status = "online";
-    User.roleId = postedUser.roleId;
+    User.role = postedUser.role;
 
-    dbUser.save((err, updatedUser) => {
+    User.save((err, createdUser) => {
       if (err) {
         res.json({ status: false, error: 'Update failed', car: null });
       }
-      res.json(updatedUser);
+      console.log('**create user OK**');
+      res.json(createdUser);
     });
 
   }
@@ -79,12 +80,13 @@ class UsersController {
       dbUser.address = postedUser.address;
       dbUser.dob = postedUser.dob;
       dbUser.status = postedUser.status;
-      dbUser.roleId = postedUser.roleId;
+      dbUser.role = postedUser.role;
 
       dbUser.save((err, updatedUser) => {
         if (err) {
           res.json({ status: false, error: 'Update failed', car: null });
         }
+        console.log('**updateUser OK**');
         res.json(updatedUser);
       });
     });

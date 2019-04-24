@@ -1,5 +1,6 @@
 const mongoose = require("mongoose"),
-Schema = mongoose.Schema;
+Schema = mongoose.Schema,
+common = require('./common');
 
 
 const UserSchema = new Schema({
@@ -12,7 +13,7 @@ const UserSchema = new Schema({
     dob: { type: String},
     status: {  type: String, trim: true },
     carId: {type: String},
-    roleId: { type: String}
+    role: common.roleInfo
 
 });
 module.exports = Users = mongoose.model("users", UserSchema);
