@@ -45,12 +45,13 @@ class UsersController {
     User.firstName = postedUser.firstName;
     User.lastName = postedUser.lastName;
     User.email = postedUser.email;
-    User.profileName = postedUser.profileName;
-    User.city = postedUser.city;
-    User.address = postedUser.address;
-    User.dob = postedUser.dob;
+    // User.profileName = postedUser.profileName;
+    // User.city = postedUser.city;
+    // User.address = postedUser.address;
+    // User.dob = postedUser.dob;
     User.status = "online";
     User.role = postedUser.role;
+    User.password = postedUser.password;
 
     User.save((err, createdUser) => {
       if (err) {
