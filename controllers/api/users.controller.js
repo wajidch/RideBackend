@@ -1,5 +1,6 @@
 
-const Users = require("../../model/Users");
+const Users = require("../../model/Users"),
+      bcrypt = require("bcryptjs");
 
 
 class UsersController {
@@ -51,16 +52,24 @@ class UsersController {
     // User.dob = postedUser.dob;
     User.status = "online";
     User.role = postedUser.role;
-    User.password = postedUser.password;
-
-    User.save((err, createdUser) => {
-      if (err) {
-        res.json({ status: false, error: 'Update failed', car: null });
-      }
-      console.log('**create user OK**');
-      res.json(createdUser);
+  
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(postedUser.password, salt, (err, hash) => {
+        if (err) {
+          throw err;
+        } else {
+          User.password = hash;
+          User.save((err, createdUser) => {
+            if (err) {
+              res.json({ status: false, error: 'Update failed', car: null });
+            }
+            console.log('**create user OK**');
+            res.json(createdUser);
+          });
+        }
+      });
     });
-
+   
   }
 
   updateUser(req, res) {
@@ -83,13 +92,22 @@ class UsersController {
       dbUser.status = postedUser.status;
       dbUser.role = postedUser.role;
 
-      dbUser.save((err, updatedUser) => {
-        if (err) {
-          res.json({ status: false, error: 'Update failed', car: null });
-        }
-        console.log('**updateUser OK**');
-        res.json(updatedUser);
-      });
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(postedUser.password, salt, (err, hash) => {
+          if (err) {
+            throw err;
+          } else {
+            dbUser.password = hash;
+            dbUser.save((err, updatedUser) => {
+              if (err) {
+                res.json({ status: false, error: 'Update failed', car: null });
+              }
+              console.log('**updateUser OK**');
+              res.json(updatedUser);
+            });
+          }
+        });
+      }); 
     });
 
   }
