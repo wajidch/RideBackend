@@ -10,6 +10,7 @@ class UsersController {
     router.put('/:id', this.updateUser.bind(this));
     router.post("/", this.createUser.bind(this));
     router.delete('/:id', this.deleteUser.bind(this));
+    router.post('/login', this.login.bind(this));
   }
 
 
@@ -121,6 +122,35 @@ class UsersController {
       }
       console.log('**Delete User OK**');
       res.json(deletedUser);
+    });
+  }
+
+  login(req, res) {
+    console.log(`controllers/api/Users/login`);
+    var postedUser = req.body;
+    var user = new Users();
+    user.email = postedUser.email;
+    user.password = postedUser.password;
+
+    Users.findOne({ 'email': user.email }, (err, dbUser) => {
+      if (err) {
+        console.log(`login error: ${err}`);
+        res.json(err);
+      }
+      if (dbUser != null) {
+        bcrypt.compare(user.password, dbUser.password, function (err, result) {
+          if (result === true) {
+            console.log('**Successfully Authenticated**');
+            res.status(200).json({ status: true, error: null, user: dbUser });
+          } else {
+            console.log('Authentication error: Invalid email or password');
+            res.status(401).json({ status: false, error: 'Authentication error: Invalid email or password', user: null });
+          }
+        });
+      } else {
+        console.log('Authentication error: Invalid email or password');
+        res.status(401).json({ status: false, error: 'Authentication error: Invalid email or password', user: null });
+      } 
     });
   }
 
