@@ -1,7 +1,7 @@
 
 const bcrypt = require("bcryptjs"),
   Cars = require("../../model/Cars"),
-  Drivers = require("../../model/Drivers");
+  Users = require("../../model/Users");
 
 
 class CarsController {
@@ -27,10 +27,10 @@ class CarsController {
     console.log(`controllers/api/cars/addCar`);
     var postedCar = req.body;
     var car = new Cars();
-    var driver = new Drivers();
-    car.carNumber = postedCar.carNumber;
-    car.password = postedCar.password;
 
+    car.carNumber = postedCar.carNumber;
+    car.user = postedCar.user;
+    car.password = postedCar.password;
 
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(car.password, salt, (err, hash) => {
@@ -38,24 +38,30 @@ class CarsController {
           throw err;
         } else {
           car.password = hash;
-          car.save((err, car) => {
+          car.save((err, dbCar) => {
             if (err) {
               console.log(`addCar error: ${err}`);
             }
             console.log('**Car created**');
-            driver.carId = car._id;
-            driver.save((err, dbDriver) => {
+            Users.findById(postedCar.user._id.toString(), (err, dbUser) => {
               if (err) {
-                console.log(`addCar.dbDriver error: ${err}`);
+                console.log('*** addCar.findUser error: ' + err);
+                res.json({ status: false, error: 'Update failed', car: null });
               }
-              console.log('**Car driver created**');
-              res.json(car);
+              dbUser.carId = dbCar._id;
+              dbUser.save((err, updatedUser) => {
+                if (err) {
+                  console.log(`addCar.updatedUser error: ${err}`);
+                }
+                console.log('**Car Assigned to ' + updatedUser.firstName);
+                res.json(dbCar);
+              });
             });
+
           });
         }
       });
     });
-
   }
 
   updateCar(req, res) {
@@ -67,18 +73,34 @@ class CarsController {
         console.log('*** updateCar error: ' + err);
         res.json({ status: false, error: 'Update failed', car: null });
       }
-      dbCar.carNumber = postedCar.carNumber;
+     
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(postedCar.password, salt, (err, hash) => {
           if (err) {
             throw err;
           } else {
+            dbCar.carNumber = postedCar.carNumber;
+            dbCar.user = null;
+            dbCar.user = postedCar.user;
             dbCar.password = hash;
             dbCar.save((err, updatedCar) => {
               if (err) {
                 console.log(`updateCar error: ${err}`);
               }
-              res.json(updatedCar);
+              Users.findById(postedCar.user._id.toString(), (err, dbUser) => {
+                if (err) {
+                  console.log('*** updateCar.findUser error: ' + err);
+                  res.json({ status: false, error: 'Update failed', car: null });
+                }
+                dbUser.carId = updatedCar._id;
+                dbUser.save((err, updatedUser) => {
+                  if (err) {
+                    console.log(`updateCar.updatedUser error: ${err}`);
+                  }
+                  console.log('**Car Assigned to ' + updatedUser.firstName);
+                  res.json(updatedCar);
+                });
+              });
             });
           }
         });
@@ -94,14 +116,15 @@ class CarsController {
         res.json(err);
       }
       console.log('**Delete Car OK**');
-      Drivers.deleteOne({ 'carId': req.params.id.toString() }, (err, deletedDriver) => {
-        if (err) {
-          console.log(`deleteCar.deleteDriver error: ${err}`);
-          res.json(err);
-        }
-        console.log('**Delete Driver OK**');
-        res.json(deletedCar);
-      }); 
+      res.json(deletedCar);
+      // Drivers.deleteOne({ 'carId': req.params.id.toString() }, (err, deletedDriver) => {
+      //   if (err) {
+      //     console.log(`deleteCar.deleteDriver error: ${err}`);
+      //     res.json(err);
+      //   }
+      //   console.log('**Delete Driver OK**');
+      //   res.json(deletedCar);
+      // }); 
     });
   }
 

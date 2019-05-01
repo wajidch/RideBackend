@@ -26,4 +26,11 @@ const roleInfo = new Schema({
     name: { type: String }
 });
 
-module.exports = { rideInfo, driverInfo, carInfo, roleInfo}
+const userInfo = new Schema({
+    _id: { type: String },
+    firstName: { type: String, trim:true },
+    lastName: { type: String, trim: true  },
+    profileName: {  type: String, trim: true }
+});
+
+module.exports = { rideInfo, driverInfo, carInfo, roleInfo, userInfo}
