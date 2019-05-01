@@ -73,7 +73,7 @@ class CarsController {
         console.log('*** updateCar error: ' + err);
         res.json({ status: false, error: 'Update failed', car: null });
       }
-     
+
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(postedCar.password, salt, (err, hash) => {
           if (err) {
@@ -129,6 +129,7 @@ class CarsController {
   }
 
   login(req, res) {
+    var _self = this;
     console.log(`controllers/api/cars/login`);
     var postedCar = req.body;
     var car = new Cars();
@@ -143,8 +144,25 @@ class CarsController {
       if (dbCar != null) {
         bcrypt.compare(car.password, dbCar.password, function (err, result) {
           if (result === true) {
-            console.log('**Successfully Authenticated**');
-            res.status(200).json({ status: true, error: null, car: dbCar });
+            let carId = _self.getObjectId(dbCar._id).toString();
+            Users.findOne({ 'carId': carId }, (err, dbUser) => {
+              if (err) {
+                console.log(`login.findUser error: ${err}`);
+                res.json(err);
+              }
+              if (dbUser != null) {
+                let data = {
+                  car: dbCar,
+                  user: dbUser
+                }
+                console.log('**Successfully Authenticated**');
+                res.status(200).json({ status: true, error: null, obj: data });
+              } else {
+                console.log('**No user is assigned to this car**');
+                res.status(401).json({ status: false, error: "No user is assigned to this car", obj: null });
+              }
+
+            });
           } else {
             console.log('Authentication error: Invalid username or password');
             res.status(401).json({ status: false, error: 'Authentication error: Invalid username or password', car: null });
@@ -157,6 +175,12 @@ class CarsController {
 
 
     });
+  }
+
+  getObjectId(Id) {
+    var ObjectId = require('mongoose').Types.ObjectId;
+
+    return new ObjectId(Id);
   }
 
 }
