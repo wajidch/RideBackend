@@ -1,5 +1,6 @@
 
 const Users = require("../../model/Users"),
+      Rides = require("../../model/Rides"),
       bcrypt = require("bcryptjs");
 
 
@@ -12,6 +13,7 @@ class UsersController {
     router.delete('/:id', this.deleteUser.bind(this));
     router.post('/login', this.login.bind(this));
     router.put('/profile/:id', this.updateUserProfile.bind(this));
+    router.get('/mylastrides/:userId', this.myLastRides.bind(this));
     
   }
 
@@ -184,6 +186,19 @@ class UsersController {
       }); 
     });
 
+  }
+
+  myLastRides(req,res) {
+    console.log(`controllers/api/users/myLastRides`); 
+    Rides.find({'userId':req.params.userId}).sort({createdOn:-1})
+    .exec( (err, myLastRides) => {
+      if (err) {
+        console.log(`myRides error: ${err}`);
+        res.json(err);
+      }
+      console.log(`**get myLastRides OK**`);
+      res.json(myLastRides);
+    });  
   }
 
 

@@ -23,7 +23,8 @@ const RideSchema = new Schema({
     isPlanRideForToday: { type: Boolean, default: false },
     isPlanShiftForToday: { type: Boolean, default: false },
     car: common.carInfo,
-    carId: { type: String}
+    carId: { type: String},
+    userId: { type: String},
 
 });
 module.exports = Rides = mongoose.model("rides", RideSchema);

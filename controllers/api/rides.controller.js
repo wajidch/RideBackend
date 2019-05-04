@@ -4,7 +4,8 @@ const Rides = require("../../model/Rides");
 class RidesController {
   constructor(router) {
     router.get('/', this.getRides.bind(this));
-    //router.put('/:id', this.updateRide.bind(this));
+    router.get('/:id',this.getRide.bind(this));
+    router.put('/:id', this.updateRide.bind(this));
     router.post('/', this.createRide.bind(this));
     router.post('/todayPlannedRides', this.createTodayPlannedRides.bind(this));
     router.get('/todayPlannedRides', this.getTodayPlannedRides.bind(this));
@@ -12,6 +13,18 @@ class RidesController {
     router.get('/todayPlannedShifts', this.getTodayPlannedShifts.bind(this));
     router.put('/sendRide', this.sendRideToDriver.bind(this));
     router.delete('/:id', this.deleteRide.bind(this));
+
+  }
+
+  getRide(req, res) {
+    console.log(`controllers/api/rides/getRide`);
+    Rides.findById(req.params.id, (err, dbRide) => {
+      if (err) {
+        console.log(`getRide error: ${err}`);
+      }
+      console.log(`**get Ride OK**`);
+      res.json(dbRide);
+    });
   }
 
   getRides(req, res) {
@@ -27,22 +40,23 @@ class RidesController {
 
   createRide(req, res) {
     console.log(`controllers/api/rides/createRide`);
-    var postedDriver = req.body;
+    var postedRide = req.body;
     var ride = new Rides();
     // ride.driver = "3123123dfdf32332"; //postedDriver.driver;
-    ride.carId = postedDriver.carId;
-    ride.startPoint = postedDriver.startPoint;
-    ride.endPoint = postedDriver.endPoint;
-    ride.startTime = postedDriver.startTime;
-    ride.endTime = postedDriver.endTime;
-    ride.totalPassengers = postedDriver.totalPassengers;
-    ride.wheelChair = postedDriver.wheelChair;
-    ride.rideType = postedDriver.rideType;
-    ride.paymentMethod = postedDriver.paymentMethod;
-    ride.amount = postedDriver.amount;
-    ride.note = postedDriver.note;
-    ride.customer = postedDriver.customer;
+    ride.carId = postedRide.carId;
+    ride.startPoint = postedRide.startPoint;
+    ride.endPoint = postedRide.endPoint;
+    ride.startTime = postedRide.startTime;
+    ride.endTime = postedRide.endTime;
+    ride.totalPassengers = postedRide.totalPassengers;
+    ride.wheelChair = postedRide.wheelChair;
+    ride.rideType = postedRide.rideType;
+    ride.paymentMethod = postedRide.paymentMethod;
+    ride.amount = postedRide.amount;
+    ride.note = postedRide.note;
+    ride.customer = postedRide.customer;
     ride.createdOn = new Date();
+    ride.userId = postedRide.userId;
 
     ride.save((err, ride) => {
       if (err) {
@@ -169,6 +183,40 @@ class RidesController {
       }
       console.log('**Delete Ride OK**');
       res.json(deletedRide);
+    });
+  }
+
+  updateRide(req, res) {
+    console.log(`controllers/api/rides/updateRide`);
+    var postedRide = req.body;
+
+    Rides.findById(postedRide._id, (err, dbRide) => {
+      if (err) {
+        console.log(`updateRide error: ${err}`);
+      }
+
+      dbRide.carId = postedRide.carId;
+      dbRide.startPoint = postedRide.startPoint;
+      dbRide.endPoint = postedRide.endPoint;
+      dbRide.startTime = postedRide.startTime;
+      dbRide.endTime = postedRide.endTime;
+      dbRide.totalPassengers = postedRide.totalPassengers;
+      dbRide.wheelChair = postedRide.wheelChair;
+      dbRide.rideType = postedRide.rideType;
+      dbRide.paymentMethod = postedRide.paymentMethod;
+      dbRide.amount = postedRide.amount;
+      dbRide.note = postedRide.note;
+      dbRide.customer = postedRide.customer;
+      dbRide.createdOn = new Date();
+      dbRide.userId = postedRide.userId;
+
+      dbRide.save((err, updatedRide) => {
+        if (err) {
+          console.log(`createRide error: ${err}`);
+        }
+        console.log(`**updateRide OK**`);
+        res.json(updatedRide);
+      });
     });
   }
 }
