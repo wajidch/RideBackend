@@ -79,15 +79,14 @@ class CarsController {
           if (err) {
             throw err;
           } else {
-            dbCar.carNumber = postedCar.carNumber;
-            dbCar.user = null;
-            dbCar.user = postedCar.user;
+            dbCar.carNumber = postedCar.carNumber; 
+            dbCar.user = postedCar.user._id? postedCar.user : dbCar.user;
             dbCar.password = hash;
             dbCar.save((err, updatedCar) => {
               if (err) {
                 console.log(`updateCar error: ${err}`);
               }
-              Users.findById(postedCar.user._id.toString(), (err, dbUser) => {
+              Users.findById(updatedCar.user._id.toString(), (err, dbUser) => {
                 if (err) {
                   console.log('*** updateCar.findUser error: ' + err);
                   res.json({ status: false, error: 'Update failed', car: null });
