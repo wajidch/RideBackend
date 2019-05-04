@@ -11,6 +11,8 @@ class UsersController {
     router.post("/", this.createUser.bind(this));
     router.delete('/:id', this.deleteUser.bind(this));
     router.post('/login', this.login.bind(this));
+    router.put('/profile/:id', this.updateUserProfile.bind(this));
+    
   }
 
 
@@ -152,6 +154,36 @@ class UsersController {
         res.status(401).json({ status: false, error: 'Authentication error: Invalid email or password', user: null });
       } 
     });
+  }
+
+  updateUserProfile(req, res) {
+    console.log(`controllers/api/users/updateUserProfile`);
+    var postedUser = req.body;
+
+    Users.findById(req.params.id.toString(), (err, dbUser) => {
+      if (err) {
+        console.log('*** updateUserProfile error: ' + err);
+        res.json({ status: false, error: 'Update failed', car: null });
+      }
+
+      dbUser.firstName = postedUser.firstName;
+      dbUser.lastName = postedUser.lastName;
+      dbUser.email = postedUser.email;
+      dbUser.profileName = postedUser.profileName;
+      dbUser.city = postedUser.city;
+      dbUser.address = postedUser.address;
+      dbUser.dob = postedUser.dob;
+      dbUser.status = postedUser.status;
+      dbUser.role = postedUser.role;
+      dbUser.save((err, updatedUser) => {
+        if (err) {
+          res.json({ status: false, error: 'Update failed', car: null });
+        }
+        console.log('**updateUserProfile OK**');
+        res.json(updatedUser);
+      }); 
+    });
+
   }
 
 
