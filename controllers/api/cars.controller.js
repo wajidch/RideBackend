@@ -11,6 +11,7 @@ class CarsController {
     router.post('/', this.addCar.bind(this));
     router.delete('/:id', this.deleteCar.bind(this));
     router.post('/login', this.login.bind(this));
+    router.put('/changePassword/:id', this.updatePassword.bind(this));
   }
 
   getCars(req, res) {
@@ -74,36 +75,61 @@ class CarsController {
         res.json({ status: false, error: 'Update failed', car: null });
       }
 
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(postedCar.password, salt, (err, hash) => {
+      dbCar.carNumber = postedCar.carNumber;
+      dbCar.user = null;
+      dbCar.user = postedCar.user._id ? postedCar.user : dbCar.user;
+       
+      dbCar.save((err, updatedCar) => {
+        if (err) {
+          console.log(`updateCar error: ${err}`);
+        }
+        Users.findById(updatedCar.user._id.toString(), (err, dbUser) => {
           if (err) {
-            throw err;
-          } else {
-            dbCar.carNumber = postedCar.carNumber; 
-            dbCar.user = postedCar.user._id? postedCar.user : dbCar.user;
-            dbCar.password = hash;
-            dbCar.save((err, updatedCar) => {
-              if (err) {
-                console.log(`updateCar error: ${err}`);
-              }
-              Users.findById(updatedCar.user._id.toString(), (err, dbUser) => {
-                if (err) {
-                  console.log('*** updateCar.findUser error: ' + err);
-                  res.json({ status: false, error: 'Update failed', car: null });
-                }
-                dbUser.carId = updatedCar._id;
-                dbUser.save((err, updatedUser) => {
-                  if (err) {
-                    console.log(`updateCar.updatedUser error: ${err}`);
-                  }
-                  console.log('**Car Assigned to ' + updatedUser.firstName);
-                  res.json(updatedCar);
-                });
-              });
-            });
+            console.log('*** updateCar.findUser error: ' + err);
+            res.json({ status: false, error: 'Update failed', car: null });
           }
+          dbUser.carId = updatedCar._id;
+          dbUser.save((err, updatedUser) => {
+            if (err) {
+              console.log(`updateCar.updatedUser error: ${err}`);
+            }
+            console.log('**Car Assigned to ' + updatedUser.firstName);
+            res.json(updatedCar);
+          });
         });
       });
+
+
+      // bcrypt.genSalt(10, (err, salt) => {
+      //   bcrypt.hash(postedCar.password, salt, (err, hash) => {
+      //     if (err) {
+      //       throw err;
+      //     } else {
+      //       dbCar.carNumber = postedCar.carNumber; 
+      //       dbCar.user = postedCar.user._id? postedCar.user : dbCar.user;
+      //       dbCar.password = hash;
+      //       dbCar.save((err, updatedCar) => {
+      //         if (err) {
+      //           console.log(`updateCar error: ${err}`);
+      //         }
+      //         Users.findById(updatedCar.user._id.toString(), (err, dbUser) => {
+      //           if (err) {
+      //             console.log('*** updateCar.findUser error: ' + err);
+      //             res.json({ status: false, error: 'Update failed', car: null });
+      //           }
+      //           dbUser.carId = updatedCar._id;
+      //           dbUser.save((err, updatedUser) => {
+      //             if (err) {
+      //               console.log(`updateCar.updatedUser error: ${err}`);
+      //             }
+      //             console.log('**Car Assigned to ' + updatedUser.firstName);
+      //             res.json(updatedCar);
+      //           });
+      //         });
+      //       });
+      //     }
+      //   });
+      // });
     });
   }
 
@@ -173,6 +199,35 @@ class CarsController {
       }
 
 
+    });
+  }
+
+  updatePassword(req, res) {
+    console.log(`controllers/api/cars/updatePassword`);
+    var postedCar = req.body;
+
+    Cars.findById(req.params.id.toString(), (err, dbCar) => {
+      if (err) {
+        console.log('*** updatePassword error: ' + err);
+        res.json({ status: false, error: 'updatePassword failed', car: null });
+      }
+
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(postedCar.password, salt, (err, hash) => {
+          if (err) {
+            throw err;
+          } else {
+            dbCar.password = hash;
+            dbCar.save((err, updatedCar) => {
+              if (err) {
+                console.log(`updateCar error: ${err}`);
+              }
+              console.log('**Update Password OK***');
+              res.json(updatedCar);
+            });
+          }
+        });
+      });
     });
   }
 

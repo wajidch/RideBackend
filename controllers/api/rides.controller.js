@@ -4,7 +4,7 @@ const Rides = require("../../model/Rides");
 class RidesController {
   constructor(router) {
     router.get('/', this.getRides.bind(this));
-    router.get('/:id',this.getRide.bind(this));
+   // router.get('/:id', this.getRide.bind(this));
     router.put('/:id', this.updateRide.bind(this));
     router.post('/', this.createRide.bind(this));
     router.post('/todayPlannedRides', this.createTodayPlannedRides.bind(this));
@@ -91,15 +91,24 @@ class RidesController {
 
   createTodayPlannedRides(req, res) {
     console.log(`controllers/api/rides/createTodayPlannedRides`);
-    var postedDriver = req.body;
+    var postedRide = req.body;
     var ride = new Rides();
 
-    ride.startPoint = postedDriver.startPoint;
-    ride.endPoint = postedDriver.endPoint;
-    ride.customer = postedDriver.customer;
-    ride.isPlanRideForToday = true;
+    ride.carId = postedRide.carId;
+    ride.startPoint = postedRide.startPoint;
+    ride.endPoint = postedRide.endPoint;
+    ride.startTime = postedRide.startTime;
+    ride.endTime = postedRide.endTime;
+    ride.totalPassengers = postedRide.totalPassengers;
+    ride.wheelChair = postedRide.wheelChair;
+    ride.rideType = postedRide.rideType;
+    ride.paymentMethod = postedRide.paymentMethod;
+    ride.amount = postedRide.amount;
+    ride.note = postedRide.note;
+    ride.customer = postedRide.customer;
     ride.createdOn = new Date();
-
+    ride.userId = postedRide.userId;
+    ride.isPlanRideForToday = true; 
     ride.save((err, ride) => {
       if (err) {
         console.log(`createTodayPlannedRides error: ${err}`);
