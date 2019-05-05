@@ -11,7 +11,7 @@ class RidesController {
     router.get('/todayPlannedRides', this.getTodayPlannedRides.bind(this));
     router.post('/todayPlannedShifts', this.createTodayPlannedShifts.bind(this));
     router.get('/todayPlannedShifts', this.getTodayPlannedShifts.bind(this));
-    router.put('/sendRide', this.sendRideToDriver.bind(this));
+    router.put('/send/Ride', this.sendRideToDriver.bind(this));
     router.delete('/:id', this.deleteRide.bind(this));
 
   }
@@ -170,7 +170,8 @@ class RidesController {
       if (err) {
         console.log(`sendRideToDriver error: ${err}`);
       }
-      dbRide.carId = postedData.driverCarId;
+      //dbRide.carId = postedData.driverCarId;
+      dbRide.userId = postedData.userId;
       dbRide.save((err, updatedRide) => {
         if (err) {
           console.log(`sendRideToDriver.updateRide error: ${err}`);
@@ -178,9 +179,7 @@ class RidesController {
         res.json(updatedRide);
         console.log(`**sendRideToDriver OK**`);
       });
-    });
-
-
+    });  
   }
 
   deleteRide(req, res) {
