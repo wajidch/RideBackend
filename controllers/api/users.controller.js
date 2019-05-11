@@ -14,6 +14,7 @@ class UsersController {
     router.post('/login', this.login.bind(this));
     router.put('/profile/:id', this.updateUserProfile.bind(this));
     router.get('/mylastrides/:userId', this.myLastRides.bind(this));
+    router.put('/update-status/:id', this.updateStatus.bind(this));
     
   }
 
@@ -200,6 +201,28 @@ class UsersController {
       res.json(myLastRides);
     });  
   }
+
+  updateStatus(req, res) {
+    console.log(`controllers/api/users/updateStatus`);
+    var postedUser = req.body;
+
+    Users.findById(req.params.id.toString(), (err, dbUser) => {
+      if (err) {
+        console.log('*** updateStatus error: ' + err);
+        res.json({ status: false, error: 'Update failed', car: null });
+      } 
+      dbUser.status = postedUser.status;
+      dbUser.save((err, updatedUser) => {
+        if (err) {
+          res.json({ status: false, error: 'Update failed', car: null });
+        }
+        console.log('**updateStatus OK**');
+        res.json(updatedUser);
+      });
+    });
+
+  }
+
 
 
 }
